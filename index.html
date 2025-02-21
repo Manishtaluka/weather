@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+    
+    <div id="input-container">
+        <h1>Weather Report</h1>
+       
+        <form id="form">
+            <label for="city">city:</label>
+            <input type="text" id="city" placeholder="enter city" ><br>
+
+           
+
+            <button type="submit">Check weather condition</button>
+
+        </form>
+       
+
+        <div class="info" id="result">
+            <h1 class="info-title">Result</h1>
+            <p class="info-data">temp: <span id="temp"></span></p>
+            <p class="info-data">Max_temp: <span id="maxtemp"></span></p>
+            <p class="info-data">Min_temp: <span id="mintemp"></span></p>
+            <p class="info-data">Pressure: <span id="pressure"></span></p>
+            <p class="info-data">Humidity: <span id="humidity"></span></p>
+            <p class="info-data">city Name: <span id="name"></span></p>
+            <p class="info-data">description: <span id="desc"></span></p>
+
+            <p class="info-data">Longitude: <span id="lon"></span></p>
+            <p class="info-data">Latitude: <span id="lat"></span></p>
+            <p class="info-data">Country: <span id="country"></span></p>
+            <p class="info-data">Main: <span id="main"></span></p>
+           
+    
+        </div>
+
+    
+      
+     
+    </div>
+
+    
+    
+
+   
+
+
+    <script src="index.js"></script>
+</body>
+</html>

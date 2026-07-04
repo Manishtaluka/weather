@@ -1,41 +1,114 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: auto;
+    min-height: 100%;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    padding: 20px 0;
     color: #333;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 250vh;
- 
+    align-items: flex-start;
+    min-height: 100vh;
+    transition: background 0.8s ease;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    background-attachment: fixed;
+    position: relative;
+}
+
+/* Dynamic backgrounds based on live weather condition, applied via JS as a body class */
+body.weather-clear {
+    background: linear-gradient(135deg, #56CCF2, #2F80ED);
+}
+body.weather-clouds {
+    background: linear-gradient(135deg, #757F9A, #D7DDE8);
+}
+body.weather-rain, body.weather-drizzle {
+    background: linear-gradient(135deg, #2c3e50, #4b6cb7);
+}
+body.weather-thunderstorm {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+body.weather-snow {
+    background: linear-gradient(135deg, #e6dada, #274046);
+}
+body.weather-mist, body.weather-fog, body.weather-haze {
+    background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+}
+body.weather-night {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
+
+/* Simple animated rain overlay, toggled with .show-rain on body */
+.weather-fx {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    display: none;
+}
+body.show-rain .weather-fx.rain { display: block; }
+body.show-snow .weather-fx.snow { display: block; }
+
+.rain span {
+    position: absolute;
+    top: -10%;
+    width: 2px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.5);
+    animation: fall linear infinite;
+}
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+
+.snow span {
+    position: absolute;
+    top: -5%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    animation: snowfall linear infinite;
+}
+@keyframes snowfall {
+    to { transform: translateY(110vh) translateX(20px); }
 }
 
 #input-container {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 25px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 400px;
-    
+    max-width: 420px;
+    z-index: 1;
 }
-form{
-    display:flex;
+
+form {
+    display: flex;
     flex-direction: column;
 }
 
 h1 {
     text-align: center;
-    color: #4CAF50;
+    color: #fff;
     margin-bottom: 20px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
-
 
 label {
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 5px;
+    color: #fff;
 }
 
 input {
@@ -47,16 +120,16 @@ input {
 }
 
 input:focus {
-    border-color: #4CAF50;
+    border-color: #2F80ED;
     outline: none;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 5px rgba(47, 128, 237, 0.5);
 }
 
 button {
     padding: 10px;
     font-size: 16px;
     color: #fff;
-    background: #4CAF50;
+    background: #124615;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -64,7 +137,12 @@ button {
 }
 
 button:hover {
-    background: #45a049;
+    background: #1c6b21;
+}
+
+button:disabled {
+    background: #7d7d7d;
+    cursor: not-allowed;
 }
 
 button:focus {
@@ -72,42 +150,97 @@ button:focus {
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
+.error {
+    color: #ffcdd2;
+    font-weight: bold;
+    text-align: center;
+    min-height: 20px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
 .info {
-    background-color: #f9f9f9;
+    background-color: rgba(249, 249, 249, 0.95);
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    max-width: 400px;
-    margin: 20px;;
-    font-family: Arial, sans-serif;
-    font-size: 20px;
-    display:none;
+    margin-top: 15px;
+    font-size: 16px;
+    display: none;
     flex-direction: column;
-    
+}
+
+.weather-headline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.weather-icon {
+    width: 70px;
+    height: 70px;
 }
 
 .info-title {
-    font-size: 1.8em;
+    font-size: 1.5em;
     color: #2c3e50;
-    margin-bottom: 15px;
-    text-align: center;
+    margin: 0;
+    text-align: left;
     font-weight: bold;
-    
 }
 
-/* Data row styling */
+.subtitle {
+    margin: 0;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.temp-big {
+    font-size: 2.6em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 5px 0 0 0;
+}
+
+.temp-big .unit {
+    font-size: 0.4em;
+    vertical-align: super;
+    color: #666;
+}
+
+.desc-text {
+    text-transform: capitalize;
+    color: #555;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
 .info-data {
-    padding: 10px 15px;
+    padding: 8px 12px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 10px;
-    font-size: 1em;
+    font-size: 0.85em;
     color: #555;
     display: flex;
-    
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 2px;
 }
 
+.info-data span:first-child {
+    font-size: 0.75em;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
+.info-data span:last-child {
+    font-weight: bold;
+    color: #2c3e50;
+}
